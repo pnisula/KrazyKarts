@@ -43,4 +43,7 @@ private:
 
 	UFUNCTION()
 	void MoveForward(float Value);
+
+	UFUNCTION()
+	void UpdateLocationFromVelocity(float DeltaTime);
 };
