@@ -50,7 +50,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	float RollingResistantCoefficient = 0.015;
 
-
 	UPROPERTY()
 	FVector Velocity;
 
@@ -60,11 +59,11 @@ private:
 	UPROPERTY()
 	float SteeringThrow;
 
-	UFUNCTION()
-	void MoveForward(float Value);
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MoveForward(float Value);
 	
-	UFUNCTION()
-	void MoveRight(float Value);
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MoveRight(float Value);
 
 	UFUNCTION()
 	void ApplyRotation(float DeltaTime);
