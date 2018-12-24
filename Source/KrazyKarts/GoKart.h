@@ -58,6 +58,10 @@ private:
 
 	UPROPERTY()
 	float SteeringThrow;
+	
+	void MoveForward(float Value);
+	void MoveRight(float Value);
+
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_MoveForward(float Value);
@@ -69,5 +73,8 @@ private:
 	void ApplyRotation(float DeltaTime);
 
 	UFUNCTION()
-	void UpdateLocationFromVelocity(float DeltaTime);
+	void UpdateLocationFromVelocity(float DeltaTime);	
+	
+	UFUNCTION()
+	FString GetEnumTextForRole(ENetRole RoleToText);
 };
