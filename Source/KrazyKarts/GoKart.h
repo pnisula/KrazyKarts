@@ -27,6 +27,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
+	FVector GetAirResistance();
+	FVector GetRollingResistance();
+
 	// The mass of the car (kg)
 	UPROPERTY(EditAnywhere)
 	float Mass = 1000;
@@ -38,6 +41,15 @@ private:
 	// The number of degrees rotated per second at full control throw (degrees/s)
 	UPROPERTY(EditAnywhere)
 	float MaxDegreesPerSecond = 90;
+
+	//Higher means more drag.
+	UPROPERTY(EditAnywhere)
+	float DragCoefficient = 16;
+
+	//Higher means more drag.
+	UPROPERTY(EditAnywhere)
+	float RollingResistantCoefficient = 0.015;
+
 
 	UPROPERTY()
 	FVector Velocity;
