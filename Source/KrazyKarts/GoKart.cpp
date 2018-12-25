@@ -28,8 +28,7 @@ void AGoKart::BeginPlay()
 void AGoKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(AGoKart, ReplicatedLocation);
-	DOREPLIFETIME(AGoKart, ReplicatedRotation);
+	DOREPLIFETIME(AGoKart, ReplicatedTransform);	
 }
 // Called every frame
 void AGoKart::Tick(float DeltaTime)
@@ -48,18 +47,16 @@ void AGoKart::Tick(float DeltaTime)
 	
 	if (HasAuthority())
 	{
-		ReplicatedLocation = GetActorLocation();
-		ReplicatedRotation = GetActorRotation();
+		ReplicatedTransform = GetActorTransform();		
 	}
 	else
 	{
-		SetActorLocation(ReplicatedLocation);
-		SetActorRotation(ReplicatedRotation);
+		SetActorTransform(ReplicatedTransform);		
 	}
 	//Debug log the role.
 	DrawDebugString(GetWorld(), FVector(0, 0, 100), GetEnumTextForRole(Role), this, FColor::White, DeltaTime);
 }
-void AGoKart::OnRep_ReplicatedLocation()
+void AGoKart::OnRep_ReplicatedTransform()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Replicated Location"));
 }
