@@ -59,6 +59,10 @@ void AGoKart::Tick(float DeltaTime)
 	//Debug log the role.
 	DrawDebugString(GetWorld(), FVector(0, 0, 100), GetEnumTextForRole(Role), this, FColor::White, DeltaTime);
 }
+void AGoKart::OnRep_ReplicatedLocation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Replicated Location"));
+}
 FString AGoKart::GetEnumTextForRole(ENetRole RoleToText)
 {	
 	switch (Role)

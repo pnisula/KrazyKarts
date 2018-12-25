@@ -53,8 +53,12 @@ private:
 	UPROPERTY()
 	FVector Velocity;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing=OnRep_ReplicatedLocation)
 	FVector ReplicatedLocation;
+
+	UFUNCTION()
+	void OnRep_ReplicatedLocation();
+
 	UPROPERTY(Replicated)
 	FRotator ReplicatedRotation;
 
