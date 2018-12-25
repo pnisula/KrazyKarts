@@ -50,7 +50,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	float RollingResistantCoefficient = 0.015;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	FVector Velocity;
 
 	UPROPERTY(ReplicatedUsing=OnRep_ReplicatedTransform)
@@ -58,12 +58,11 @@ private:
 
 	UFUNCTION()
 	void OnRep_ReplicatedTransform();
-
 	
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	float Throttle;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	float SteeringThrow;
 	
 	void MoveForward(float Value);
