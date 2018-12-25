@@ -4,6 +4,7 @@
 #include "Components/InputComponent.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "UnrealNetwork.h"
 
 // Sets default values
 AGoKart::AGoKart()
@@ -20,6 +21,12 @@ void AGoKart::BeginPlay()
 	
 }
 
+void AGoKart::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AGoKart, ReplicatedLocation);
+	DOREPLIFETIME(AGoKart, ReplicatedRotation);
+}
 // Called every frame
 void AGoKart::Tick(float DeltaTime)
 {
@@ -34,7 +41,17 @@ void AGoKart::Tick(float DeltaTime)
 			
 	ApplyRotation(DeltaTime);
 	UpdateLocationFromVelocity(DeltaTime);
-
+	
+	if (HasAuthority())
+	{
+		ReplicatedLocation = GetActorLocation();
+		ReplicatedRotation = GetActorRotation();
+	}
+	else
+	{
+		SetActorLocation(ReplicatedLocation);
+		SetActorRotation(ReplicatedRotation);
+	}
 	//Debug log the role.
 	DrawDebugString(GetWorld(), FVector(0, 0, 100), GetEnumTextForRole(Role), this, FColor::White, DeltaTime);
 }

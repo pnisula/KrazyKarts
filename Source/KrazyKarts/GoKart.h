@@ -53,6 +53,11 @@ private:
 	UPROPERTY()
 	FVector Velocity;
 
+	UPROPERTY(Replicated)
+	FVector ReplicatedLocation;
+	UPROPERTY(Replicated)
+	FRotator ReplicatedRotation;
+
 	UPROPERTY()
 	float Throttle;
 
