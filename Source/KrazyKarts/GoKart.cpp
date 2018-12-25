@@ -48,17 +48,14 @@ void AGoKart::Tick(float DeltaTime)
 	if (HasAuthority())
 	{
 		ReplicatedTransform = GetActorTransform();		
-	}
-	else
-	{
-		SetActorTransform(ReplicatedTransform);		
-	}
+	}	
 	//Debug log the role.
 	DrawDebugString(GetWorld(), FVector(0, 0, 100), GetEnumTextForRole(Role), this, FColor::White, DeltaTime);
 }
 void AGoKart::OnRep_ReplicatedTransform()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Replicated Location"));
+	//UE_LOG(LogTemp, Warning, TEXT("Replicated Location"));
+	SetActorTransform(ReplicatedTransform);
 }
 FString AGoKart::GetEnumTextForRole(ENetRole RoleToText)
 {	
