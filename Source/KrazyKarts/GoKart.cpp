@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "UnrealNetwork.h"
+#include "GameFramework/GameStateBase.h"
 
 // Sets default values
 AGoKart::AGoKart()
@@ -35,17 +36,26 @@ void AGoKart::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (IsLocallyControlled())
+	if (Role == ROLE_AutonomousProxy)
 	{
 		FGoKartMove Move = CreateMove(DeltaTime);
-		if (!HasAuthority())
-		{
-			UnacknowledgedMoves.Add(Move);
-			UE_LOG(LogTemp, Warning, TEXT("Queue length: %d"), UnacknowledgedMoves.Num());
-			SimulateMove(Move);
-		}		
-		Server_SendMove(Move);		
-	}	
+		SimulateMove(Move);
+
+		UnacknowledgedMoves.Add(Move);
+		Server_SendMove(Move);
+		UE_LOG(LogTemp, Warning, TEXT("Queue length: %d"), UnacknowledgedMoves.Num());
+		
+	}
+	if (Role == ROLE_Authority && GetRemoteRole() != ROLE_AutonomousProxy)
+	{
+		//We are the server and in control of the pawn.
+		FGoKartMove Move = CreateMove(DeltaTime);		
+		Server_SendMove(Move);
+	}
+	if (Role == ROLE_SimulatedProxy)
+	{
+		SimulateMove(ServerState.LastMove);
+	}
 	//Debug log the role.
 	DrawDebugString(GetWorld(), FVector(0, 0, 100), GetEnumTextForRole(Role), this, FColor::White, DeltaTime);
 }
@@ -56,6 +66,11 @@ void AGoKart::OnRep_ServerState()
 	Velocity = ServerState.Velocity;
 
 	ClearUnacknowledgedMoves(ServerState.LastMove);
+
+	for (const FGoKartMove& Move : UnacknowledgedMoves)
+	{
+		SimulateMove(Move);
+	}
 }
 FString AGoKart::GetEnumTextForRole(ENetRole RoleToText)
 {	
@@ -73,7 +88,7 @@ FString AGoKart::GetEnumTextForRole(ENetRole RoleToText)
 		return "Error";
 	}	
 }
-void AGoKart::SimulateMove(FGoKartMove Move)
+void AGoKart::SimulateMove(const FGoKartMove& Move)
 {
 	FVector Force = GetActorForwardVector() * MaxDrivingForce * Move.Throttle;
 	Force += GetAirResistance();
@@ -92,18 +107,15 @@ FGoKartMove AGoKart::CreateMove(float DeltaTime)
 	Move.DeltaTime = DeltaTime;
 	Move.SteeringThrow = SteeringThrowLocal;
 	Move.Throttle = Throttle;
-	Move.Time = GetWorld()->TimeSeconds;
+	Move.Time = GetWorld()->GetGameState()->GetServerWorldTimeSeconds();
 
 	return Move;
 }
 void AGoKart::ClearUnacknowledgedMoves(FGoKartMove LastMove)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Last Move: %f"),LastMove.Time);
-	
+{		
 	TArray<FGoKartMove> NewMoves;
 	for (const FGoKartMove& Move : UnacknowledgedMoves)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Move Time: %f"), Move.Time);
+	{		
 		if (Move.Time > LastMove.Time)
 		{
 			NewMoves.Add(Move);
