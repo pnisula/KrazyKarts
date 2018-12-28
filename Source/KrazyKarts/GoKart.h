@@ -61,6 +61,15 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
+	UFUNCTION()
+	void SimulateMove(FGoKartMove Move);
+
+	UFUNCTION()
+	FGoKartMove CreateMove(float DeltaTime);
+
+	UFUNCTION()
+	void ClearUnacknowledgedMoves(FGoKartMove LastMove);
+
 	FVector GetAirResistance();
 	FVector GetRollingResistance();
 
@@ -87,11 +96,13 @@ private:
 	UPROPERTY()
 	FVector Velocity;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	float Throttle;
 
-	UPROPERTY(Replicated)
-	float SteeringThrow;
+	UPROPERTY()
+	float SteeringThrowLocal;
+
+	TArray<FGoKartMove> UnacknowledgedMoves;
 	
 	void MoveForward(float Value);
 	void MoveRight(float Value);
@@ -106,7 +117,7 @@ private:
 	void Server_SendMove(FGoKartMove Move);
 		
 	UFUNCTION()
-	void ApplyRotation(float DeltaTime);
+	void ApplyRotation(float DeltaTime, float SteeringThrow);
 
 	UFUNCTION()
 	void UpdateLocationFromVelocity(float DeltaTime);	
