@@ -6,6 +6,40 @@
 #include "GameFramework/Pawn.h"
 #include "GoKart.generated.h"
 
+USTRUCT()
+struct FGoKartMove
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY()
+	float Throttle;
+
+	UPROPERTY()
+	float SteeringThrow;
+
+	UPROPERTY()
+	float DeltaTime;
+
+	UPROPERTY()
+	float Time;
+};
+
+USTRUCT()
+struct FGoKartState
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY()
+	FTransform Transform;
+
+	UPROPERTY()
+	FVector Velocity;
+
+	UPROPERTY()
+	FGoKartMove LastMove;
+};
+
+
 UCLASS()
 class KRAZYKARTS_API AGoKart : public APawn
 {
@@ -49,16 +83,10 @@ private:
 	//Higher means more drag.
 	UPROPERTY(EditAnywhere)
 	float RollingResistantCoefficient = 0.015;
-
-	UPROPERTY(Replicated)
+	
+	UPROPERTY()
 	FVector Velocity;
 
-	UPROPERTY(ReplicatedUsing=OnRep_ReplicatedTransform)
-	FTransform ReplicatedTransform;
-
-	UFUNCTION()
-	void OnRep_ReplicatedTransform();
-	
 	UPROPERTY(Replicated)
 	float Throttle;
 
@@ -68,13 +96,15 @@ private:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
+	UPROPERTY(ReplicatedUsing = OnRep_ServerState)
+	FGoKartState ServerState;
+
+	UFUNCTION()
+	void OnRep_ServerState();
 
 	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_MoveForward(float Value);
-	
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_MoveRight(float Value);
-
+	void Server_SendMove(FGoKartMove Move);
+		
 	UFUNCTION()
 	void ApplyRotation(float DeltaTime);
 
