@@ -74,6 +74,9 @@ private:
 	
 	UPROPERTY()
 	FTransform ClientStartTransform;	
+	
+	UPROPERTY()
+	FVector ClientStartVelocity;
 
 	UPROPERTY()
 	UGoKartMovementComponent* MovementComponent;
