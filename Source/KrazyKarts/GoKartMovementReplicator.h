@@ -42,17 +42,38 @@ private:
 	UFUNCTION()
 	void ClearUnacknowledgedMoves(FGoKartMove LastMove);
 			
-	UPROPERTY(ReplicatedUsing = OnRep_ServerState)
-	FGoKartState ServerState;
+	UFUNCTION()
+	void UpdateServerState(const FGoKartMove& Move);
+
+	UFUNCTION()
+	void ClientTick(float DeltaTime);
 
 	UFUNCTION()
 	void OnRep_ServerState();
 
+	UFUNCTION()
+	void AutonomousProxy_OnRep_ServerState();
+
+	UFUNCTION()
+	void SimulatedProxy_OnRep_ServerState();
+
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_SendMove(FGoKartMove Move);	
 
+	UPROPERTY(ReplicatedUsing = OnRep_ServerState)
+	FGoKartState ServerState;
+
 	UPROPERTY()
 	TArray<FGoKartMove> UnacknowledgedMoves;
+
+	UPROPERTY()
+	float ClientTimeSinceUpdate;
+
+	UPROPERTY()
+	float ClientTimeBetweenLastUpdates;
+	
+	UPROPERTY()
+	FVector ClientStartLocation;
 
 	UPROPERTY()
 	UGoKartMovementComponent* MovementComponent;

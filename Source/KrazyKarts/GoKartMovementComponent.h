@@ -43,9 +43,6 @@ public:
 
 	UFUNCTION()
 	void SimulateMove(const FGoKartMove& Move);
-
-	UFUNCTION()
-	FGoKartMove CreateMove(float DeltaTime);
 	
 	UFUNCTION()
 	FVector GetVelocity() { return Velocity; };
@@ -59,7 +56,13 @@ public:
 	UFUNCTION()
 	void SetSteeringThrow(float Value) { SteeringThrow = Value; };
 
+	UFUNCTION()
+	FGoKartMove GetLastMove() { return LastMove; };
+
 private:	
+	UFUNCTION()
+	FGoKartMove CreateMove(float DeltaTime);
+
 	UFUNCTION()
 	FVector GetAirResistance();
 	
@@ -100,4 +103,7 @@ private:
 
 	UPROPERTY()
 	float SteeringThrow;
+
+	UPROPERTY()
+	FGoKartMove LastMove;
 };
