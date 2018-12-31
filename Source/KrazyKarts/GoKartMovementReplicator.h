@@ -62,6 +62,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
 private:
 	UFUNCTION()
 	void ClearUnacknowledgedMoves(FGoKartMove LastMove);
@@ -98,7 +99,7 @@ private:
 
 	UFUNCTION()
 	void InterpolateRotation(float LerpRatio);		
-
+	
 	UPROPERTY(ReplicatedUsing = OnRep_ServerState)
 	FGoKartState ServerState;
 
@@ -118,5 +119,17 @@ private:
 	FVector ClientStartVelocity;
 
 	UPROPERTY()
-	UGoKartMovementComponent* MovementComponent;
+	float ClientSimulatedTime;
+
+	UPROPERTY()
+	UGoKartMovementComponent* MovementComponent;	
+
+	UPROPERTY()
+	USceneComponent* MeshOffsetRoot;
+
+	UFUNCTION(BlueprintCallable)
+	void SetMeshOffsetRoot(USceneComponent* Root) 
+	{ 
+		MeshOffsetRoot = Root; 
+	}
 };
