@@ -2,6 +2,7 @@
 
 #include "GoKartMovementReplicator.h"
 #include "UnrealNetwork.h"
+#include "Engine/World.h"
 #include "GameFramework/Actor.h"
 
 // Sets default values for this component's properties

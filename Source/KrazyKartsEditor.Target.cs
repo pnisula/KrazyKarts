@@ -8,6 +8,8 @@ public class KrazyKartsEditorTarget : TargetRules
 	public KrazyKartsEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
+	    bUseUnityBuild = false;
+	    bUsePCHFiles = false;
 		ExtraModuleNames.Add("KrazyKarts");
 	}
 }
